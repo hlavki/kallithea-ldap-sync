@@ -72,4 +72,4 @@ It is recommended that you don't use production database and test it on TEST env
 
 ### License
 
-All source code is licensed under Apache License 2.0. Important note is that binary rule tree files (*.lem) are **NOT** licensed under Apache License 2.0 and can be used only for non-commercial projects.
+All source code is licensed under Apache License 2.0.
