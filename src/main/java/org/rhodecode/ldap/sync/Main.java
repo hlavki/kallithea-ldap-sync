@@ -59,7 +59,6 @@ public class Main {
             rhode = new RhodeCodeService(props);
         }
         try {
-            Set<Group> rhodeGroups = rhode.getGroups();
             Set<Group> ldapGroups = ldapReader.getGroups();
             Map<String, User> ldapUsers = ldapReader.getUsers();
 
@@ -80,6 +79,7 @@ public class Main {
             for (User user : rhodeUsers) {
                 createdUsers.put(user.getDn(), user);
             }
+            Set<Group> rhodeGroups = rhode.getGroups();
             rhode.updateGroups(rhodeGroups, ldapGroups, createdUsers);
 
             Set<User> usersToRemove = new HashSet<>(rhodeUsers);
