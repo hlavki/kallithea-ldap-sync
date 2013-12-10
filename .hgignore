@@ -1,0 +1,18 @@
+# use glob syntax.
+syntax: glob
+target/
+profiles.xml
+.project
+.classpath
+.settings
+nbactions.xml
+nb-configuration.xml
+jooq-configuration.xml
+
+# switch to regexp syntax.
+syntax: regexp
+\.orig$
+\.orig\..*$
+\.chg\..*$
+\.rej$
+\.conflict\~$
