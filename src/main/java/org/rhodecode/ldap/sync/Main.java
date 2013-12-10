@@ -46,6 +46,7 @@ public class Main {
             return;
         }
 
+        log.info("Using " + cmdArgs.getConfig().getPath() + " configuration file");
         Properties props = new Properties();
         props.load(new FileInputStream(cmdArgs.getConfig()));
         LdapReader ldapReader = new LdapReader(props);
@@ -75,13 +76,13 @@ public class Main {
             // znova nacitam vsetkych rhode userov
             Set<User> rhodeUsers = rhode.getUsers();
 
-            Map<String, User> createdUsers = new HashMap<String, User>();
+            Map<String, User> createdUsers = new HashMap<>();
             for (User user : rhodeUsers) {
                 createdUsers.put(user.getDn(), user);
             }
             rhode.updateGroups(rhodeGroups, ldapGroups, createdUsers);
 
-            Set<User> usersToRemove = new HashSet<User>(rhodeUsers);
+            Set<User> usersToRemove = new HashSet<>(rhodeUsers);
             usersToRemove.removeAll(ldapUsers.values());
             log.info("users to remove: " + usersToRemove);
 //            rhode.removeUsers(usersToRemove);
