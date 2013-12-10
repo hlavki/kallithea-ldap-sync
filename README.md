@@ -1,6 +1,7 @@
 # LDAP to RhodeCode Synchronizer
 
 Synchronize users and groups from LDAP to RhodeCode database. Supported databases are:
+
 *    PostgreSQL
 *    MySQL
 
