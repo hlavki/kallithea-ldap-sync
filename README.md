@@ -6,35 +6,54 @@ Synchronize users and groups from LDAP to RhodeCode database. Supported database
 
 #### Example configuration:
 
-:::properties
     ldap.host=localhost
     ldap.port=389
     ldap.bindDn=cn=Directory Manager
     ldap.password=password
+    # base DN
     ldap.user.searchbase=dc=company,dc=com
+    # filter for user search
     ldap.user.filter=(objectClass=person)
+    # users are search recursively with scope ONE. You need to define filter for nested search
     ldap.child.org.filter=(|(objectClass=organization)(objectClass=organizationalUnit))
+    # username ldap attribute
     ldap.user.username.attr=uid
+    # first name ldap attribute
     ldap.user.firstName.attr=givenName
+    # last name ldap attribute
     ldap.user.lastName.attr=sn
+    # e-mail ldap attribute
     ldap.user.mail.attr=mail
+    # if you want to create group with all ldap users, ucomment this line
     #ldap.alluser.group.name=ALL_USERS
 
+    #base DN for groups (absolute)
     ldap.group.base=ou=Groups,dc=company,dc=com
+    # filter for group mapping (include group names is recommended)
     ldap.group.filter=(&(objectClass=groupOfUniqueNames)(|(cn=EMPLOYEES)(cn=EXTERNAL)))
+    # ldap group name attribute
     ldap.group.name.attr=cn
+    # ldap description attribute
     ldap.group.description.attr=description
+    # member attribute in group
     ldap.group.member.attr=uniqueMember
 
+    # define JDBC driver class
     rhodecode.jdbc.driver=org.postgresql.Driver
+    # JDBC URL
     rhodecode.jdbc.url=jdbc:postgresql://localhost:5432/rhodecode
     rhodecode.jdbc.username=rhodecode
     rhodecode.jdbc.password=password
+    # All objects will be created under this user id (primary key from table USERS)
     rhodecode.creator.id=2
-    rhodecode.userGroupReadPerm.id=10
-    rhodecode.userGroupAdminPerm.id=13
+    # define identifier of default user (primary key from table USERS)
     rhodecode.defaultUser.id=1
+    # define identifier of admin user (primary key from table USERS)
     rhodecode.adminUser.id=2
+    # default user group permission (primary key from table PERMISSIONS e.g. 10 means usergroup.none)
+    rhodecode.userGroupReadPerm.id=10
+    # identifier of permission that will be granted to admin user (admin user is defined in rhodecode.adminUser property)
+    rhodecode.userGroupAdminPerm.id=13
 
 
 #### Usage:
