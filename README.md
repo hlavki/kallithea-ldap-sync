@@ -5,6 +5,10 @@ Synchronize users and groups from LDAP to RhodeCode database. Supported database
 *    PostgreSQL
 *    MySQL
 
+#### Download
+
+Latest snapshots: [rhodecode-ldap-sync-2.2.3-SNAPSHOT.tar.gz](https://bitbucket.org/hlavki/rhodecode-ldap-sync/downloads/rhodecode-ldap-sync-2.2.3-SNAPSHOT.tar.gz)
+
 #### Example configuration:
 
     ldap.host=localhost
