@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -241,7 +242,8 @@ public class RhodeCodeService {
                 groupRec.store();
                 group.setId(groupRec.getUsersGroupId());
 
-                updateGroupMembership(create, group, getGroupFromSet(group, ldapGroups), dnUsers);
+                Group rhodeGroup = new Group(group.getId(), group.getDn(), group.getName(), group.getDescription(), Collections.<String>emptySet());
+                updateGroupMembership(create, rhodeGroup, getGroupFromSet(group, ldapGroups), dnUsers);
 
                 UserUserGroupToPermRecord permRec = create.newRecord(USER_USER_GROUP_TO_PERM);
                 permRec.setUserId(defaultUserId);
