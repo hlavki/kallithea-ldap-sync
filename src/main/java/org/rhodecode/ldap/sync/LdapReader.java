@@ -86,7 +86,7 @@ public class LdapReader {
         SearchResult search = conn.search(baseDn, SearchScope.ONE, userSearchFilter,
                 usernameAttr, firstNameAttr, lastNameAttr, mailAttr);
         for (SearchResultEntry entry : search.getSearchEntries()) {
-            String username = entry.getAttributeValue(usernameAttr);
+            String username = entry.getAttributeValue(usernameAttr).toLowerCase();
             String firstName = entry.getAttributeValue(firstNameAttr);
             String lastName = entry.getAttributeValue(lastNameAttr);
             String mail = entry.getAttributeValue(mailAttr);
@@ -106,7 +106,7 @@ public class LdapReader {
         SearchResult search = conn.search(dn, SearchScope.BASE, "(&)",
                 usernameAttr, firstNameAttr, lastNameAttr, mailAttr);
         SearchResultEntry entry = search.getSearchEntry(dn);
-        String username = entry.getAttributeValue(usernameAttr);
+        String username = entry.getAttributeValue(usernameAttr).toLowerCase();
         String firstName = entry.getAttributeValue(firstNameAttr);
         String lastName = entry.getAttributeValue(lastNameAttr);
         String mail = entry.getAttributeValue(mailAttr);
