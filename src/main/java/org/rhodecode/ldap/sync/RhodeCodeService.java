@@ -303,7 +303,7 @@ public class RhodeCodeService {
 
         int added = 0;
         for (String memberDn : addMemberships) {
-            User user = dnUsers.get(memberDn);
+            User user = dnUsers.get(memberDn.toLowerCase());
             if (user != null) {
                 Integer userId = user.getId();
                 UsersGroupsMembersRecord memberRec = create.newRecord(USERS_GROUPS_MEMBERS);

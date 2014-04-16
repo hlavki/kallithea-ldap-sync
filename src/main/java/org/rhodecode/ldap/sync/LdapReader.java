@@ -90,7 +90,8 @@ public class LdapReader {
             String firstName = entry.getAttributeValue(firstNameAttr);
             String lastName = entry.getAttributeValue(lastNameAttr);
             String mail = entry.getAttributeValue(mailAttr);
-            result.put(entry.getDN(), new User(entry.getDN(), username, firstName, lastName, mail));
+            String dn = entry.getDN().toLowerCase();
+            result.put(dn, new User(dn, username, firstName, lastName, mail));
         }
         search = conn.search(baseDn, SearchScope.ONE, childOrgFilter, "cn");
         for (SearchResultEntry entry : search.getSearchEntries()) {
@@ -110,7 +111,8 @@ public class LdapReader {
         String firstName = entry.getAttributeValue(firstNameAttr);
         String lastName = entry.getAttributeValue(lastNameAttr);
         String mail = entry.getAttributeValue(mailAttr);
-        return new User(entry.getDN(), username, firstName, lastName, mail);
+        String userDn = entry.getDN().toLowerCase();
+        return new User(userDn, username, firstName, lastName, mail);
     }
 
     public Set<Group> getGroups() throws LDAPException {
@@ -123,7 +125,7 @@ public class LdapReader {
         log.debug("Getting groups. Filter: " + filter);
         SearchResult search = conn.search(baseDN, SearchScope.ONE, filter, nameAttr, descriptionAttr, memberAttr);
         for (SearchResultEntry entry : search.getSearchEntries()) {
-            String dn = entry.getDN();
+            String dn = entry.getDN().toLowerCase();
             String[] members = entry.getAttributeValues(memberAttr);
             Set<String> memberDNs = Collections.emptySet();
             if (members != null) {

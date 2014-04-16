@@ -80,7 +80,7 @@ public class ReadOnlyRhodeCodeService extends RhodeCodeService {
 
     @Override
     public void updateGroups(Set<Group> rhodeGroups, Set<Group> ldapGroups, Map<String, User> dnUsers) {
-        Set<Group> addGroups = new HashSet<Group>(ldapGroups);
+        Set<Group> addGroups = new HashSet<>(ldapGroups);
         addGroups.removeAll(rhodeGroups);
         for (Group group : addGroups) {
             log.info("Group " + group.getName() + " will be created with " + group.getMemberDNs().size() + " members");
