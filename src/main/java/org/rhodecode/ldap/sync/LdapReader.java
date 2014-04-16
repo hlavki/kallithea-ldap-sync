@@ -129,7 +129,10 @@ public class LdapReader {
             String[] members = entry.getAttributeValues(memberAttr);
             Set<String> memberDNs = Collections.emptySet();
             if (members != null) {
-                memberDNs = new HashSet<>(Arrays.asList(members));
+                memberDNs = new HashSet<>();
+                for (String memberDN : members) {
+                    memberDNs.add(memberDN.toLowerCase());
+                }
             }
             String name = entry.getAttributeValue(nameAttr);
             String description = entry.getAttributeValue(descriptionAttr);
