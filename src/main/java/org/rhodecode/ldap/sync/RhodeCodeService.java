@@ -29,6 +29,7 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import static org.rhodecode.ldap.sync.jooq.Tables.*;
 import org.rhodecode.ldap.sync.jooq.tables.records.UserUserGroupToPermRecord;
@@ -155,17 +156,20 @@ public class RhodeCodeService {
                 userRec.setLastname(user.getLastName());
                 userRec.setEmail(user.getMail());
                 userRec.setExternName(user.getDn());
+                if (createNew) {
+                    log.info("Creating new user {}", user.getUsername());
+                }
                 userRec.store();
                 user.setId(userRec.getUserId());
                 if (createNew) {
-                    log.info("Created user " + user.getUsername() + " with id " + user.getId());
+                    log.info("Created user {} with id {}", new Object[]{user.getUsername(), user.getId()});
                 } else {
                     updated++;
                 }
             }
             log.info(updated + " users updated");
             conn.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | DataAccessException e) {
             try {
                 if (conn != null) conn.rollback();
             } catch (SQLException e1) {
