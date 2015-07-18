@@ -44,7 +44,7 @@
         </fileSet>
         <fileSet>
             <directory>target/</directory>
-            <outputDirectory>/logs</outputDirectory>
+            <outputDirectory>logs</outputDirectory>
             <excludes>
                 <exclude>**/*</exclude>
             </excludes>
