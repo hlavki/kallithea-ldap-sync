@@ -10,7 +10,7 @@ Synchronize users and groups from LDAP to Kallithea database. Supported database
 Latest snapshots: [kallithea-ldap-sync-0.2.2-SNAPSHOT.tar.gz](https://bitbucket.org/hlavki/kallithea-ldap-sync/downloads/kallithea-ldap-sync-0.2.2-SNAPSHOT.tar.gz)
 
 #### Example configuration:
-
+    :::properties
     ldap.host=localhost
     ldap.port=389
     ldap.bindDn=cn=Directory Manager
