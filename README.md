@@ -65,16 +65,16 @@ kallithea.userGroupAdminPerm.id=13
 Be aware of that this code is under development and probably contains bugs. **Use on own responsibility!!!**
 It is recommended that you don't use production database and test it on TEST environment.
 
-    ```bash
-    #dry run (only shows what will be changed)
-    ./run.sh --dry
+```bash
+#dry run (only shows what will be changed)
+./run.sh --dry
 
-    #normal run (write changes)
-    ./run.sh
+#normal run (write changes)
+./run.sh
 
-    # custom configuration file
-    ./run.sh -c conf/ldap-sync-test.properties
-    ```
+# custom configuration file
+./run.sh -c conf/ldap-sync-test.properties
+```
 
 ### License
 
