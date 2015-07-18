@@ -10,7 +10,7 @@ Synchronize users and groups from LDAP to Kallithea database. Supported database
 Latest snapshots: [kallithea-ldap-sync-0.2.2-SNAPSHOT.tar.gz](https://bitbucket.org/hlavki/kallithea-ldap-sync/downloads/kallithea-ldap-sync-0.2.2-SNAPSHOT.tar.gz)
 
 #### Example configuration:
-    :::properties
+    ```properties
     ldap.host=localhost
     ldap.port=389
     ldap.bindDn=cn=Directory Manager
@@ -59,13 +59,13 @@ Latest snapshots: [kallithea-ldap-sync-0.2.2-SNAPSHOT.tar.gz](https://bitbucket.
     kallithea.userGroupReadPerm.id=10
     # identifier of permission that will be granted to admin user (admin user is defined in kallithea.adminUser property)
     kallithea.userGroupAdminPerm.id=13
-
+    ```
 
 #### Usage:
 Be aware of that this code is under development and probably contains bugs. **Use on own responsibility!!!**
 It is recommended that you don't use production database and test it on TEST environment.
 
-    :::bash
+    ```bash
     #dry run (only shows what will be changed)
     ./run.sh --dry
 
@@ -74,6 +74,7 @@ It is recommended that you don't use production database and test it on TEST env
 
     # custom configuration file
     ./run.sh -c conf/ldap-sync-test.properties
+    ```
 
 ### License
 
