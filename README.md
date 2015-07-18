@@ -1,13 +1,13 @@
-# LDAP to RhodeCode Synchronizer
+# LDAP to Kallithea Synchronizer
 
-Synchronize users and groups from LDAP to RhodeCode database. Supported databases are:
+Synchronize users and groups from LDAP to Kallithea database. Supported databases are:
 
 *    PostgreSQL
 *    MySQL
 
 #### Download
 
-Latest snapshots: [rhodecode-ldap-sync-2.2.3-SNAPSHOT.tar.gz](https://bitbucket.org/hlavki/rhodecode-ldap-sync/downloads/rhodecode-ldap-sync-2.2.3-SNAPSHOT.tar.gz)
+Latest snapshots: [kallithea-ldap-sync-0.2.2-SNAPSHOT.tar.gz](https://bitbucket.org/hlavki/kallithea-ldap-sync/downloads/kallithea-ldap-sync-0.2.2-SNAPSHOT.tar.gz)
 
 #### Example configuration:
 
@@ -44,21 +44,21 @@ Latest snapshots: [rhodecode-ldap-sync-2.2.3-SNAPSHOT.tar.gz](https://bitbucket.
     ldap.group.member.attr=uniqueMember
 
     # define JDBC driver class
-    rhodecode.jdbc.driver=org.postgresql.Driver
+    kallithea.jdbc.driver=org.postgresql.Driver
     # JDBC URL
-    rhodecode.jdbc.url=jdbc:postgresql://localhost:5432/rhodecode
-    rhodecode.jdbc.username=rhodecode
-    rhodecode.jdbc.password=password
+    kallithea.jdbc.url=jdbc:postgresql://localhost:5432/kallithea
+    kallithea.jdbc.username=kallithea
+    kallithea.jdbc.password=password
     # All objects will be created under this user id (primary key from table USERS)
-    rhodecode.creator.id=2
+    kallithea.creator.id=2
     # define identifier of default user (primary key from table USERS)
-    rhodecode.defaultUser.id=1
+    kallithea.defaultUser.id=1
     # define identifier of admin user (primary key from table USERS)
-    rhodecode.adminUser.id=2
+    kallithea.adminUser.id=2
     # default user group permission (primary key from table PERMISSIONS e.g. 10 means usergroup.none)
-    rhodecode.userGroupReadPerm.id=10
-    # identifier of permission that will be granted to admin user (admin user is defined in rhodecode.adminUser property)
-    rhodecode.userGroupAdminPerm.id=13
+    kallithea.userGroupReadPerm.id=10
+    # identifier of permission that will be granted to admin user (admin user is defined in kallithea.adminUser property)
+    kallithea.userGroupAdminPerm.id=13
 
 
 #### Usage:

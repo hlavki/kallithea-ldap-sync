@@ -4,4 +4,4 @@
 # LANG=sk_SK.UTF-8
 # export LANG
 ######
-$JAVA_HOME/bin/java -Djava.util.logging.config.file=conf/logging.properties -jar rhodecode-ldap-sync.jar $*
+$JAVA_HOME/bin/java -Djava.util.logging.config.file=conf/logging.properties -jar kallithea-ldap-sync.jar $*
