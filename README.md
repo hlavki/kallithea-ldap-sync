@@ -63,7 +63,7 @@ kallithea.userGroupAdminPerm.id=13
 
 #### Usage:
 Be aware of that this code is under development and probably contains bugs. **Use on own responsibility!!!**
-It is recommended that you don't use production database and test it on TEST environment.
+It is recommended to test it on TEST environment.
 
 ```bash
 #dry run (only shows what will be changed)
