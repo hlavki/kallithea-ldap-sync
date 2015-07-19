@@ -28,7 +28,6 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import static org.kallithea.ldap.sync.jooq.Tables.*;
@@ -71,8 +70,8 @@ public class KallitheaService {
         Set<User> users = new HashSet<>();
         try {
             conn = ConnectionProvider.getKallitheaConnection(config);
-            DSLContext create = DSL.using(conn, SQLDialect.POSTGRES);
-            Result<Record> result = create.select().from(USERS).where(USERS.EXTERN_TYPE.equal("ldap")).fetch();
+            DSLContext dsl = DSL.using(conn);
+            Result<Record> result = dsl.select().from(USERS).where(USERS.EXTERN_TYPE.equal("ldap")).fetch();
             for (Record r : result) {
                 Integer id = r.getValue(USERS.USER_ID);
                 String username = r.getValue(USERS.USERNAME);
@@ -102,13 +101,13 @@ public class KallitheaService {
         Set<Group> groups = new HashSet<>();
         try {
             conn = ConnectionProvider.getKallitheaConnection(config);
-            DSLContext create = DSL.using(conn /*, SQLDialect.POSTGRES*/);
-            Result<Record> groupSelect = create.select().from(USERS_GROUPS).fetch();
+            DSLContext dsl = DSL.using(conn);
+            Result<Record> groupSelect = dsl.select().from(USERS_GROUPS).fetch();
             for (Record r : groupSelect) {
                 Integer id = r.getValue(USERS_GROUPS.USERS_GROUP_ID);
                 String name = r.getValue(USERS_GROUPS.USERS_GROUP_NAME);
                 String description = r.getValue(USERS_GROUPS.USER_GROUP_DESCRIPTION);
-                Result<Record1<String>> memberSelect = create.select(USERS.EXTERN_NAME).from(USERS)
+                Result<Record1<String>> memberSelect = dsl.select(USERS.EXTERN_NAME).from(USERS)
                         .join(USERS_GROUPS_MEMBERS).on(USERS_GROUPS_MEMBERS.USER_ID.eq(USERS.USER_ID))
                         .where(USERS_GROUPS_MEMBERS.USERS_GROUP_ID.eq(id)).fetch();
                 Set<String> memberDNs = new HashSet<>();
@@ -139,11 +138,11 @@ public class KallitheaService {
             conn.setAutoCommit(false);
             int updated = 0;
             for (User user : users) {
-                DSLContext create = DSL.using(conn/*, SQLDialect.POSTGRES*/);
-                UsersRecord userRec = create.fetchOne(USERS, USERS.USERNAME.eq(user.getUsername()));
+                DSLContext dsl = DSL.using(conn);
+                UsersRecord userRec = dsl.fetchOne(USERS, USERS.USERNAME.eq(user.getUsername()));
                 boolean createNew = false;
                 if (userRec == null) {
-                    userRec = create.newRecord(USERS);
+                    userRec = dsl.newRecord(USERS);
                     userRec.setCreatedOn(new Timestamp(System.currentTimeMillis()));
                     userRec.setExternType("ldap");
                     userRec.setActive(Boolean.TRUE);
@@ -194,9 +193,9 @@ public class KallitheaService {
             conn.setAutoCommit(false);
 
             for (User user : users) {
-                DSLContext create = DSL.using(conn /*, SQLDialect.POSTGRES*/);
-                create.delete(USERS_GROUPS_MEMBERS).where(USERS_GROUPS_MEMBERS.USER_ID.eq(user.getId())).execute();
-                UsersRecord userRec = create.fetchOne(USERS, USERS.USER_ID.eq(user.getId()));
+                DSLContext dsl = DSL.using(conn);
+                dsl.delete(USERS_GROUPS_MEMBERS).where(USERS_GROUPS_MEMBERS.USER_ID.eq(user.getId())).execute();
+                UsersRecord userRec = dsl.fetchOne(USERS, USERS.USER_ID.eq(user.getId()));
                 log.info("Removing user " + user.getUsername() + " with id " + user.getId());
                 userRec.delete();
             }
@@ -233,10 +232,10 @@ public class KallitheaService {
         try {
             conn = ConnectionProvider.getKallitheaConnection(config);
             conn.setAutoCommit(false);
-            DSLContext create = DSL.using(conn, SQLDialect.POSTGRES);
+            DSLContext dsl = DSL.using(conn);
 
             for (Group group : addGroups) {
-                UsersGroupsRecord groupRec = create.newRecord(USERS_GROUPS);
+                UsersGroupsRecord groupRec = dsl.newRecord(USERS_GROUPS);
                 groupRec.setUserId(creatorId);
                 groupRec.setUsersGroupActive(Boolean.TRUE);
                 groupRec.setUsersGroupName(group.getName());
@@ -247,14 +246,14 @@ public class KallitheaService {
                 group.setId(groupRec.getUsersGroupId());
 
                 Group rhodeGroup = new Group(group.getId(), group.getDn(), group.getName(), group.getDescription(), Collections.<String>emptySet());
-                updateGroupMembership(create, rhodeGroup, getGroupFromSet(group, ldapGroups), dnUsers);
+                updateGroupMembership(dsl, rhodeGroup, getGroupFromSet(group, ldapGroups), dnUsers);
 
-                UserUserGroupToPermRecord permRec = create.newRecord(USER_USER_GROUP_TO_PERM);
+                UserUserGroupToPermRecord permRec = dsl.newRecord(USER_USER_GROUP_TO_PERM);
                 permRec.setUserId(defaultUserId);
                 permRec.setUserGroupId(group.getId());
                 permRec.setPermissionId(userGroupReadPermId);
                 permRec.store();
-                permRec = create.newRecord(USER_USER_GROUP_TO_PERM);
+                permRec = dsl.newRecord(USER_USER_GROUP_TO_PERM);
                 permRec.setUserId(adminUserId);
                 permRec.setUserGroupId(group.getId());
                 permRec.setPermissionId(userGroupAdminPermId);
@@ -265,7 +264,7 @@ public class KallitheaService {
             for (Group group : rhodeGroups) {
                 Group ldapGroup = getGroupFromSet(group, ldapGroups);
                 if (ldapGroup != null) {
-                    updateGroupMembership(create, group, ldapGroup, dnUsers);
+                    updateGroupMembership(dsl, group, ldapGroup, dnUsers);
                 }
             }
             conn.commit();
