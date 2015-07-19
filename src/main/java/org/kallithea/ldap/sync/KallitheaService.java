@@ -218,7 +218,7 @@ public class KallitheaService {
         }
     }
 
-    public void updateGroups(Set<Group> rhodeGroups, Set<Group> ldapGroups, Map<String, User> dnUsers) {
+    public void updateGroups(Set<Group> destGroups, Set<Group> ldapGroups, Map<String, User> dnUsers) {
         Integer creatorId = Integer.parseInt(config.getProperty(RC_CREATOR_ID_PROP));
         Integer userGroupReadPermId = Integer.parseInt(config.getProperty(RC_USER_GROUP_READ_PERM_ID_PROP));
         Integer userGroupAdminPermId = Integer.parseInt(config.getProperty(RC_USER_GROUP_ADMIN_PERM_ID_PROP));
@@ -226,7 +226,7 @@ public class KallitheaService {
         Integer adminUserId = Integer.parseInt(config.getProperty(RC_USER_ADMIN_USER_ID_PROP));
 
         Set<Group> addGroups = new HashSet<>(ldapGroups);
-        addGroups.removeAll(rhodeGroups);
+        addGroups.removeAll(destGroups);
 
         Connection conn = null;
         try {
@@ -245,8 +245,8 @@ public class KallitheaService {
                 groupRec.store();
                 group.setId(groupRec.getUsersGroupId());
 
-                Group rhodeGroup = new Group(group.getId(), group.getDn(), group.getName(), group.getDescription(), Collections.<String>emptySet());
-                updateGroupMembership(dsl, rhodeGroup, getGroupFromSet(group, ldapGroups), dnUsers);
+                Group destGroup = new Group(group.getId(), group.getDn(), group.getName(), group.getDescription(), Collections.<String>emptySet());
+                updateGroupMembership(dsl, destGroup, getGroupFromSet(group, ldapGroups), dnUsers);
 
                 UserUserGroupToPermRecord permRec = dsl.newRecord(USER_USER_GROUP_TO_PERM);
                 permRec.setUserId(defaultUserId);
@@ -261,7 +261,7 @@ public class KallitheaService {
                 log.info("Created Group " + group.getName() + " with id " + group.getId() + " and " + group.getMemberDNs().size() + " members");
             }
 
-            for (Group group : rhodeGroups) {
+            for (Group group : destGroups) {
                 Group ldapGroup = getGroupFromSet(group, ldapGroups);
                 if (ldapGroup != null) {
                     updateGroupMembership(dsl, group, ldapGroup, dnUsers);
@@ -296,12 +296,12 @@ public class KallitheaService {
         return result;
     }
 
-    private void updateGroupMembership(DSLContext create, Group rhodeGroup, Group ldapGroup,
+    private void updateGroupMembership(DSLContext create, Group destGroup, Group ldapGroup,
             Map<String, User> dnUsers) throws SQLException {
         Set<String> addMemberships = new HashSet<>(ldapGroup.getMemberDNs());
-        addMemberships.removeAll(rhodeGroup.getMemberDNs());
+        addMemberships.removeAll(destGroup.getMemberDNs());
 
-        Set<String> removeMemberships = new HashSet<>(rhodeGroup.getMemberDNs());
+        Set<String> removeMemberships = new HashSet<>(destGroup.getMemberDNs());
         removeMemberships.removeAll(ldapGroup.getMemberDNs());
 
         int added = 0;
@@ -311,7 +311,7 @@ public class KallitheaService {
                 Integer userId = user.getId();
                 UsersGroupsMembersRecord memberRec = create.newRecord(USERS_GROUPS_MEMBERS);
                 memberRec.setUserId(userId);
-                memberRec.setUsersGroupId(rhodeGroup.getId());
+                memberRec.setUsersGroupId(destGroup.getId());
                 memberRec.store();
                 added++;
             } else {
@@ -324,11 +324,11 @@ public class KallitheaService {
             if (user != null) {
                 removed += create.delete(USERS_GROUPS_MEMBERS)
                         .where(USERS_GROUPS_MEMBERS.USER_ID.eq(user.getId())
-                                .and(USERS_GROUPS_MEMBERS.USERS_GROUP_ID.equal(rhodeGroup.getId()))).execute();
+                                .and(USERS_GROUPS_MEMBERS.USERS_GROUP_ID.equal(destGroup.getId()))).execute();
             }
         }
-        log.info("Updated Group " + rhodeGroup.getName() + " with id " + rhodeGroup.getId() + ". All members: "
-                + rhodeGroup.getMemberDNs().size() + " Added members: " + added + " Removed members: " + removed);
+        log.info("Updated Group " + destGroup.getName() + " with id " + destGroup.getId() + ". All members: "
+                + destGroup.getMemberDNs().size() + " Added members: " + added + " Removed members: " + removed);
     }
 
 }

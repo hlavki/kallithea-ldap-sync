@@ -50,13 +50,13 @@ public class Main {
         Properties props = new Properties();
         props.load(new FileInputStream(cmdArgs.getConfig()));
         LdapReader ldapReader = new LdapReader(props);
-        KallitheaService rhode;
+        KallitheaService kallithea;
         if (cmdArgs.isDryRun()) {
             log.info("Using DRY run mode");
-            rhode = new ReadOnlyKallitheaService(props);
+            kallithea = new ReadOnlyKallitheaService(props);
         } else {
             log.info("Using production write mode");
-            rhode = new KallitheaService(props);
+            kallithea = new KallitheaService(props);
         }
         try {
             Set<Group> ldapGroups = ldapReader.getGroups();
@@ -70,22 +70,22 @@ public class Main {
 
             log.info("All LDAP users count: " + ldapUsers.size());
 
-            rhode.addOrUpdateUsers(ldapUsers.values());
+            kallithea.addOrUpdateUsers(ldapUsers.values());
 
-            // znova nacitam vsetkych rhode userov
-            Set<User> rhodeUsers = rhode.getUsers();
+            // read all kallithea users again
+            Set<User> destUsers = kallithea.getUsers();
 
             Map<String, User> createdUsers = new HashMap<>();
-            for (User user : rhodeUsers) {
+            for (User user : destUsers) {
                 createdUsers.put(user.getDn(), user);
             }
-            Set<Group> rhodeGroups = rhode.getGroups();
-            rhode.updateGroups(rhodeGroups, ldapGroups, createdUsers);
+            Set<Group> destGroups = kallithea.getGroups();
+            kallithea.updateGroups(destGroups, ldapGroups, createdUsers);
 
-            Set<User> usersToRemove = new HashSet<>(rhodeUsers);
+            Set<User> usersToRemove = new HashSet<>(destUsers);
             usersToRemove.removeAll(ldapUsers.values());
             log.info("users to remove: " + usersToRemove);
-//            rhode.removeUsers(usersToRemove);
+//            kallithea.removeUsers(usersToRemove);
         } finally {
             ldapReader.finish();
         }

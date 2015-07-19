@@ -79,14 +79,14 @@ public class ReadOnlyKallitheaService extends KallitheaService {
     }
 
     @Override
-    public void updateGroups(Set<Group> rhodeGroups, Set<Group> ldapGroups, Map<String, User> dnUsers) {
+    public void updateGroups(Set<Group> destGroups, Set<Group> ldapGroups, Map<String, User> dnUsers) {
         Set<Group> addGroups = new HashSet<>(ldapGroups);
-        addGroups.removeAll(rhodeGroups);
+        addGroups.removeAll(destGroups);
         for (Group group : addGroups) {
             log.info("Group " + group.getName() + " will be created with " + group.getMemberDNs().size() + " members");
         }
 
-        for (Group group : rhodeGroups) {
+        for (Group group : destGroups) {
             Group ldapGroup = getGroupFromSet(group, ldapGroups);
             if (ldapGroup != null) {
                 updateGroupMembership(group, ldapGroup, dnUsers);
@@ -94,11 +94,11 @@ public class ReadOnlyKallitheaService extends KallitheaService {
         }
     }
 
-    private void updateGroupMembership(Group rhodeGroup, Group ldapGroup, Map<String, User> dnUsers) {
+    private void updateGroupMembership(Group destGroup, Group ldapGroup, Map<String, User> dnUsers) {
         Set<String> addMemberships = new HashSet<>(ldapGroup.getMemberDNs());
-        addMemberships.removeAll(rhodeGroup.getMemberDNs());
+        addMemberships.removeAll(destGroup.getMemberDNs());
 
-        Set<String> removeMemberships = new HashSet<>(rhodeGroup.getMemberDNs());
+        Set<String> removeMemberships = new HashSet<>(destGroup.getMemberDNs());
         removeMemberships.removeAll(ldapGroup.getMemberDNs());
 
         int added = 0;
@@ -117,7 +117,7 @@ public class ReadOnlyKallitheaService extends KallitheaService {
                 removed++;
             }
         }
-        log.info("Updated Group " + rhodeGroup.getName() + " with id " + rhodeGroup.getId() + ". All members: "
-                + rhodeGroup.getMemberDNs().size() + " Added members: " + added + " Removed members: " + removed);
+        log.info("Updated Group " + destGroup.getName() + " with id " + destGroup.getId() + ". All members: "
+                + destGroup.getMemberDNs().size() + " Added members: " + added + " Removed members: " + removed);
     }
 }
